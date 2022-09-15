@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, flash
+from flask import Flask, request, render_template, redirect, flash, session
 from surveys import satisfaction_survey as survey
 
 app = Flask(__name__)
