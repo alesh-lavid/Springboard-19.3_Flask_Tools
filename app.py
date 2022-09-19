@@ -2,8 +2,7 @@ from flask import Flask, request, render_template, redirect, flash, session
 from surveys import satisfaction_survey as survey
 
 app = Flask(__name__)
-
-responses = []
+app.config['SECRET_KEY'] = "this-is-secret"
 
 @app.route("/")
 def handle_home():
@@ -11,11 +10,16 @@ def handle_home():
 
 @app.route("/start", methods=["POST"])
 def handle_start():
+
+    session["responses"] = []
+
     return redirect("/questions/0")
 
 @app.route("/questions/<int:ques_num>")
 def handle_questions(ques_num):
     question = survey.questions[ques_num]
+
+    responses = session["responses"]
 
     if (len(responses ) == len(survey.questions)):
         return redirect("/finish")
@@ -30,7 +34,9 @@ def handle_questions(ques_num):
 def handle_answer():
     answer = request.form["answer"]
 
+    responses = session["responses"]
     responses.append(answer)
+    session["responses"] = responses
     
     if (len(responses ) == len(survey.questions)):
         return redirect("/finish")
